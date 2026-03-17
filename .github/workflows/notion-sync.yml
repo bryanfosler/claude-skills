@@ -1,0 +1,144 @@
+# Notion Sync — Issue Comment Trigger
+#
+# Syncs GitHub issue activity to a Notion database whenever a comment
+# matching "Time: Xm" is posted on an issue.
+#
+# Setup:
+#   1. Create a Notion integration at https://www.notion.so/my-integrations
+#   2. Share your database with the integration
+#   3. Copy the database ID from the database URL:
+#      https://notion.so/your-workspace/DATABASE_ID?v=...
+#   4. Add secrets to this repo:
+#      gh secret set NOTION_API_KEY --body "secret_..."
+#   5. Update NOTION_DB_ID below with your database ID
+#   6. Update the `Project` value to match your Notion select option
+#
+# Notion database properties expected:
+#   Title (title), Status (select), Labels (multi-select),
+#   GitHub URL (url), Created (date), Project (select),
+#   Time Spent (min) (number), Tokens (number), API Equiv ($) (number),
+#   Week (select, format: 2026-W09), Month (select, format: 2026-03)
+#
+# Comment format that triggers sync:
+#   Time: 45m
+#   Time: 45m  Tokens: 1234567  Cost: 4.56
+
+name: Notion Sync
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  sync:
+    if: contains(github.event.comment.body, 'Time:')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Sync to Notion
+        env:
+          NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
+          NOTION_DB_ID: "YOUR_NOTION_DATABASE_ID"   # ← replace this
+          PROJECT_NAME: "Your Project Name"          # ← replace this (must match Notion select option)
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+          ISSUE_STATE: ${{ github.event.issue.state }}
+          ISSUE_LABELS: ${{ toJson(github.event.issue.labels) }}
+          ISSUE_CREATED: ${{ github.event.issue.created_at }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
+          REPO: ${{ github.repository }}
+        run: |
+          node << 'EOF'
+          const https = require('https');
+
+          const dbId    = process.env.NOTION_DB_ID;
+          const apiKey  = process.env.NOTION_API_KEY;
+          const comment = process.env.COMMENT_BODY || '';
+          const labels  = JSON.parse(process.env.ISSUE_LABELS || '[]');
+          const created = process.env.ISSUE_CREATED;
+
+          // ── Parse comment ─────────────────────────────────────────────────
+          const timeMatch   = comment.match(/Time:\s*((\d+)h)?((\d+)m)?/);
+          const tokenMatch  = comment.match(/Tokens:\s*(\d+)/);
+          const costMatch   = comment.match(/Cost:\s*([\d.]+)/);
+
+          let minutes = 0;
+          if (timeMatch) {
+            minutes += parseInt(timeMatch[2] || 0) * 60;
+            minutes += parseInt(timeMatch[4] || 0);
+          }
+          const tokens = tokenMatch ? parseInt(tokenMatch[1]) : null;
+          const cost   = costMatch  ? parseFloat(costMatch[1]) : null;
+
+          // ── Date helpers ──────────────────────────────────────────────────
+          const d = new Date(created);
+          const week = (() => {
+            const jan4 = new Date(d.getFullYear(), 0, 4);
+            const diff = d - jan4;
+            const weekNum = Math.ceil((diff / 86400000 + jan4.getDay() + 1) / 7);
+            return `${d.getFullYear()}-W${String(weekNum).padStart(2, '0')}`;
+          })();
+          const month = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+
+          // ── Build Notion properties ───────────────────────────────────────
+          const props = {
+            "Title":        { title: [{ text: { content: `#${process.env.ISSUE_NUMBER} ${process.env.ISSUE_TITLE}` } }] },
+            "Status":       { select: { name: process.env.ISSUE_STATE === 'closed' ? 'Done' : 'In Progress' } },
+            "GitHub URL":   { url: process.env.ISSUE_URL },
+            "Project":      { select: { name: process.env.PROJECT_NAME } },
+            "Created":      { date: { start: created } },
+            "Week":         { select: { name: week } },
+            "Month":        { select: { name: month } },
+            "Labels":       { multi_select: labels.map(l => ({ name: l.name })) },
+          };
+          if (minutes > 0)  props["Time Spent (min)"]  = { number: minutes };
+          if (tokens !== null) props["Tokens"]          = { number: tokens };
+          if (cost !== null)   props["API Equiv ($)"]   = { number: cost };
+
+          // ── Search for existing page ──────────────────────────────────────
+          function notionRequest(method, path, body) {
+            return new Promise((resolve, reject) => {
+              const data = body ? JSON.stringify(body) : null;
+              const req = https.request({
+                hostname: 'api.notion.com',
+                path,
+                method,
+                headers: {
+                  'Authorization': `Bearer ${apiKey}`,
+                  'Notion-Version': '2022-06-28',
+                  'Content-Type': 'application/json',
+                  ...(data ? { 'Content-Length': Buffer.byteLength(data) } : {}),
+                },
+              }, res => {
+                let body = '';
+                res.on('data', c => body += c);
+                res.on('end', () => resolve(JSON.parse(body)));
+              });
+              req.on('error', reject);
+              if (data) req.write(data);
+              req.end();
+            });
+          }
+
+          async function main() {
+            // Search for existing page by GitHub URL
+            const search = await notionRequest('POST', '/v1/databases/' + dbId + '/query', {
+              filter: { property: 'GitHub URL', url: { equals: process.env.ISSUE_URL } }
+            });
+
+            if (search.results && search.results.length > 0) {
+              const pageId = search.results[0].id;
+              await notionRequest('PATCH', '/v1/pages/' + pageId, { properties: props });
+              console.log('Updated existing Notion page:', pageId);
+            } else {
+              const result = await notionRequest('POST', '/v1/pages', {
+                parent: { database_id: dbId },
+                properties: props,
+              });
+              console.log('Created new Notion page:', result.id);
+            }
+          }
+
+          main().catch(e => { console.error(e); process.exit(1); });
+          EOF

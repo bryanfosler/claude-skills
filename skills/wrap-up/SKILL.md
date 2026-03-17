@@ -10,6 +10,22 @@ description: Use when user says "wrap up", "close session", "end session",
 Run four phases in order. All phases auto-apply without asking; present a
 consolidated report at the end.
 
+> **Configuration:** Before using, set the variables in the "Configure" section
+> below to match your setup. Omit any optional steps you don't use.
+
+---
+
+## Configure
+
+Edit these to match your environment. Claude will use them throughout the skill.
+
+```
+GITHUB_USERNAME: your-github-username
+OBSIDIAN_SESSIONS_DIR: ~/path/to/vault/sessions      # optional — remove step 8 if unused
+NOTION_SYNC: true                                     # optional — set false to skip step 9
+SESSION_TOKENS_SCRIPT: ~/path/to/session_tokens.py   # optional — see utils/session_tokens.py
+```
+
 ---
 
 ## Phase 1: Ship It
@@ -36,25 +52,41 @@ consolidated report at the end.
    - Check for an open issue covering this session's work
    - If none exists, create one:
      ```
-     gh issue create --repo YOUR_USERNAME/REPO --title "..." --body "..."
+     gh issue create --repo GITHUB_USERNAME/REPO --title "..." --body "..."
      ```
 
    **b) Add issue to the GitHub Project board (if you use one):**
    ```
-   gh project item-add PROJECT_NUMBER --owner YOUR_USERNAME --url ISSUE_URL
+   gh project item-add PROJECT_NUMBER --owner GITHUB_USERNAME --url ISSUE_URL
    ```
+   Skip if you don't use GitHub Projects.
 
-   **c) Log time on the issue:**
-   - Post a comment with how long the session took:
+   **c) Log time and tokens on the issue:**
+   - If `SESSION_TOKENS_SCRIPT` is configured, run it to get the token string:
      ```
-     gh issue comment ISSUE_NUMBER --repo YOUR_USERNAME/REPO --body "Time: Xm"
+     python3 SESSION_TOKENS_SCRIPT
      ```
-   - Round to nearest 5 minutes; formats: `45m`, `1h`, `1h30m`, `2h`
+   - Post a single comment combining time + tokens (or just time if not tracking tokens):
+     ```
+     gh issue comment ISSUE_NUMBER --repo GITHUB_USERNAME/REPO \
+       --body "Time: Xm  Tokens: XXXXXXX  Cost: XX.XX"
+     ```
+   - Round time to nearest 5 minutes; formats: `45m`, `1h`, `1h30m`, `2h`
+   - Estimate time honestly based on actual work done this session
+   - If `NOTION_SYNC` is true, this comment automatically triggers the
+     GitHub Actions → Notion sync (see `.github/workflows/notion-sync.yml`)
 
    **d) Close the issue if work is complete:**
    ```
-   gh issue close ISSUE_NUMBER --repo YOUR_USERNAME/REPO
+   gh issue close ISSUE_NUMBER --repo GITHUB_USERNAME/REPO
    ```
+
+   **e) If NOTION_SYNC is true, verify the sync ran:**
+   ```
+   gh run list --repo GITHUB_USERNAME/REPO --workflow=notion-sync.yml --limit 1
+   ```
+   Confirm the latest run shows `completed / success`. If it shows `failure`,
+   flag it — the Notion sync may need attention.
 
 **Session log:**
 7. Append a new entry to the project's `sessions.md` file (create it if it
@@ -79,8 +111,18 @@ consolidated report at the end.
 -
 ```
 
+**Obsidian session log (optional):**
+8. If `OBSIDIAN_SESSIONS_DIR` is configured, write the session summary there:
+   - **File name:** `YYYY-MM-DD-HHmm-short-slug.md`
+     Use today's date + approximate time + 2-4 word kebab-case slug
+     (e.g. `2026-03-17-1430-auth-refactor.md`)
+   - **Content:** same structured format as the `sessions.md` entry above
+   - The file will sync to any device connected to your vault (iCloud, Syncthing, etc.)
+   - All session files should live in the same `sessions/` folder — never outside it
+   - Skip this step if `OBSIDIAN_SESSIONS_DIR` is not set
+
 **Learning log:**
-8. If the session produced meaningful new technical concepts, debugging stories,
+9. If the session produced meaningful new technical concepts, debugging stories,
    or "aha moments", add a new section to the project's `learnings.md` (create
    if it doesn't exist).
    Write it engagingly — like explaining to a curious friend, not a spec sheet.
@@ -88,8 +130,8 @@ consolidated report at the end.
    Skip this step if the session was minor changes with nothing worth teaching.
 
 **Task cleanup:**
-9. Check the task list for in-progress or stale items
-10. Mark completed tasks as done, flag orphaned ones
+10. Check the task list for in-progress or stale items
+11. Mark completed tasks as done, flag orphaned ones
 
 ---
 
@@ -143,6 +185,7 @@ Apply the change, commit if it's a file edit, then summarize.
 
 Present findings in two sections:
 
+```
 Findings (applied):
 
 1. ✅ Friction: [description]
@@ -153,6 +196,7 @@ No action needed:
 
 2. Knowledge: [description]
    Already documented in [location]
+```
 
 ---
 
