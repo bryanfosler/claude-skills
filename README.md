@@ -43,6 +43,25 @@ The skill is modular — each optional feature (Obsidian, Notion, token tracking
 
 ---
 
+### `/long-running-agent-harness`
+
+Harness for AI agent workflows that span multiple context windows, hours, or days. Prevents agents from losing continuity between sessions, redoing completed work, or declaring victory too early.
+
+**Three continuity artifacts:**
+- `feature_list.json` — exhaustive, testable feature ledger (flat or phase-gated hierarchy)
+- `claude-progress.txt` — append-only session log (read first, write last)
+- `init.sh` — reproducible startup script
+
+**Two roles:** Initializer (once) creates artifacts + baseline commit. Coding agent (every session) reads artifacts, verifies baseline, implements one feature, commits.
+
+**Best paired with** superpowers `executing-plans` (inline) as the within-session execution engine.
+
+Based on [Anthropic's "Effective Harnesses for Long-Running Agents"](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents).
+
+→ [skills/long-running-agent-harness/SKILL.md](skills/long-running-agent-harness/SKILL.md)
+
+---
+
 ## Optional Setup
 
 ### Token & Cost Tracking
