@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "claude-skills",
+  "version": "1.0.0",
+  "description": "Bryan Fosler's collection of Claude Code plugins and skills",
+  "owner": {
+    "name": "Bryan Fosler"
+  },
+  "plugins": [
+    {
+      "name": "product-discovery",
+      "description": "Deep product research framework — JTBD (Moesta), ODI (Ulwick), competitor teardowns, friction mining, opportunity scoring.",
+      "version": "0.1.0",
+      "source": "./plugins/product-discovery",
+      "category": "research"
+    }
+  ]
+}

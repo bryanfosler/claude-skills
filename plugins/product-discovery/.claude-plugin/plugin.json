@@ -1,0 +1,18 @@
+{
+  "name": "product-discovery",
+  "description": "Deep product research framework — JTBD (Moesta), ODI (Ulwick), competitor teardowns, friction mining, opportunity scoring — for serious product discovery work in Claude Code.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Bryan Fosler"
+  },
+  "license": "personal-use",
+  "keywords": [
+    "product-discovery",
+    "jtbd",
+    "odi",
+    "competitor-research",
+    "ux-research",
+    "pm",
+    "wedge"
+  ]
+}
