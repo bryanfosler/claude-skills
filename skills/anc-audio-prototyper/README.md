@@ -1,10 +1,10 @@
 # ANC Audio Prototyper
 
-Design alert sounds that penetrate Active Noise Cancelling headphones, grounded in the University of Salford / Skoda DuoBell research. Built for the Karoo bike computer (F20/KSL and K4) but applicable to any product that needs to reach ANC headphone users.
+Design alert sounds that penetrate Active Noise Cancelling headphones, grounded in the University of Salford / Skoda DuoBell research. Built for bike computers but applicable to any product that needs to reach ANC headphone users.
 
 ## When to Use
 
-- Designing a bike bell or alert tone for Karoo F20/KSL or K4
+- Designing a bike bell or alert tone for an embedded speaker
 - Prototyping sounds that must be heard through ANC headphones
 - Evaluating speaker hardware against ANC bypass requirements
 - Generating WAV files for on-device testing
@@ -16,7 +16,7 @@ Design alert sounds that penetrate Active Noise Cancelling headphones, grounded 
 - ANC penetration scores (0-100) based on DuoBell parameters
 - Urgency ratings based on Edworthy psychoacoustic model
 - Detection distance estimates from Salford VR study data
-- Karoo-compatible WAV exports (mono, 16kHz, 16-bit signed PCM)
+- WAV exports (mono, 16kHz, 16-bit signed PCM)
 
 ## Prerequisites
 
@@ -34,13 +34,9 @@ Design alert sounds that penetrate Active Noise Cancelling headphones, grounded 
 | Min SPL | 83 dBA @ 2m | Overcomes worst-case ANC attenuation (26 dBA) |
 | Pulse rate | 4-8 Hz | Strongest driver of perceived urgency |
 
-## Hardware Compatibility
+## Hardware Requirements
 
-| Platform | Feasible | Why |
-|----------|----------|-----|
-| F20/KSL (MY28) | Yes | Voice coil driver, 300-5000 Hz, 40-85 dBA |
-| K4 (MY29) | Yes | Same speaker + mic array |
-| K24 (Current) | No | Piezo element can't produce 700-800 Hz |
+The speaker must support voice coil or balanced armature drivers covering 300-5000 Hz. Piezo-only elements cannot produce the critical 700-800 Hz ANC gap frequency.
 
 ## Research Source
 

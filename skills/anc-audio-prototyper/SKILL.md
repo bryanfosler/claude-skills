@@ -3,10 +3,10 @@ name: anc-audio-prototyper
 description: >
   Design and prototype audio signals optimized for penetrating Active Noise
   Cancelling headphones, based on the Skoda/Salford DuoBell research. Use when
-  designing alert sounds, bike bells, or warning signals for the Karoo bike
-  computer (F20/KSL or K4), or any product that needs to reach pedestrians
-  wearing ANC headphones. Covers frequency optimization, psychoacoustic
-  design, hardware constraint matching, and Web Audio API prototyping.
+  designing alert sounds, bike bells, or warning signals for any product that
+  needs to reach users wearing ANC headphones. Covers frequency optimization,
+  psychoacoustic design, hardware constraint matching, and Web Audio API
+  prototyping.
 ---
 
 # ANC Audio Prototyper
@@ -16,10 +16,10 @@ peer-reviewed acoustic research and constrained to specific hardware specs.
 
 ## When to Use
 
-- Designing a bike bell sound for Karoo F20/KSL or K4
-- Prototyping alert tones that must be heard through ANC headphones
+- Designing alert tones that must be heard through ANC headphones
+- Prototyping bike bell or warning sounds for embedded speakers
 - Evaluating audio hardware capabilities against ANC bypass requirements
-- Generating WAV files for testing on Karoo hardware
+- Generating WAV files for on-device testing
 - Comparing sound designs using A/B methodology
 
 ## Research Foundation
@@ -73,40 +73,15 @@ These techniques increase perceived urgency and detectability at lower SPL:
 - **Inharmonic spectrum**: Non-integer harmonics increase urgency vs pure tones
 - **Chirp sweep**: Non-stationary signals force ANC to continuously re-converge
 
-## Hardware Specs
+## Hardware Requirements
 
-### F20/KSL (MY28) — FEASIBLE
-
-```
-Driver:          1508 voice coil
-Amplifier:       WSA8855 (Qualcomm Aqstic)
-Frequency:       300 - 5000 Hz
-SPL Range:       40 - 85 dBA
-Volume Control:  >10 discrete steps
-Tone Accuracy:   +/- 2% Hz
-Codec Support:   MP3, OGG, AAC, WAV
-Wet Operation:   Required (housing attenuation < 2dB)
-WAV Format:      Mono, 16kHz, 16-bit signed PCM (per codebase standard)
-Bell PSD Line:   316 (SW feature)
-```
-
-### K4 (MY29) — FEASIBLE + PSD TARGET
-
-```
-Same speaker as KSL
-Bell PSD Line:   64 (HW target: "bell-like tones")
-Added:           Microphone array (2-3x QMP-1000)
-```
-
-### K24 (Current) — NOT FEASIBLE
-
-```
-Driver:          Piezo element
-Signal:          nRF52833 → PWM → PAM8907
-Frequency:       ~3000-5000 Hz (resonant only)
-ANC Gap:         Cannot produce 700-800 Hz
-Volume:          Fixed (no control)
-```
+To produce ANC-optimized bells, the speaker must be capable of:
+- Reproducing 700-800 Hz at adequate SPL (rules out piezo-only drivers)
+- Voice coil or balanced armature driver recommended
+- Frequency response covering at least 300-5000 Hz
+- SPL output of 40-85 dBA range
+- Wet/weather operation with minimal housing attenuation
+- WAV playback: mono, 16kHz, 16-bit signed PCM
 
 ## Prototyping Tool
 
@@ -129,17 +104,17 @@ Open with `open ~/Projects/anc-bell-prototyper/ANC-Bell-Prototype-Beeper-vs-Spea
 - **ANC penetration score**: 0-100 rating based on research parameters
 - **Urgency rating**: Based on Edworthy psychoacoustic model
 - **Detection distance estimate**: Extrapolated from Salford VR study data
-- **F20 response curve overlay**: See how the speaker shapes the sound
+- **Speaker response curve overlay**: See how the speaker shapes the sound
 - **ANC attenuation overlay**: Visualize where ANC is weakest
 - **A/B comparison**: Two slots to compare designs side-by-side
-- **Karoo WAV export**: Mono 16kHz 16-bit PCM matching codebase standard
+- **WAV export**: Mono 16kHz 16-bit PCM
 - **Experiment log**: Name, rate, and annotate sounds with CSV export
 - **Shareable URLs**: Encode presets in URL hash for team sharing
 - **Keyboard shortcuts**: Space/S/L/E/1-8/A/B/N/O for rapid iteration
 
 ### Optimal Starting Point
 
-Based on the research, the optimal ANC bell design for F20:
+Based on the research, the optimal ANC bell design:
 
 ```
 Fundamental:     750 Hz (ANC gap center)
@@ -161,30 +136,14 @@ Harmonics:       1500 Hz @ 40%, 3200 Hz @ 25%
 2. **Check scores** — ANC penetration > 70 and urgency > 50 are targets
 3. **A/B compare** — Switch slots to compare designs
 4. **Log experiments** — Press N to annotate what you hear
-5. **Export Karoo WAV** — Use the 16kHz export for on-device testing
+5. **Export WAV** — Use the 16kHz export for on-device testing
 6. **Share with team** — Use Share URL to send exact parameters
 
-## Reference Documents
+## Reference
 
 ```
-SharePoint - Speaker/Beeper Decision:
-  Hammerhead > Shared Documents > Hardware > 00 - Predevelopment >
-  BC F20 MY28 Learning Cells > 00_ Learning Cell Presentations >
-  F20 Speaker vs. Beeper Decision.pptx
-
-SharePoint - Technology Feasibility:
-  ...> 1 - Audio Alerts > F20 BC MY28 - Speaker vs. Beeper technology feasibility.docx
-
-SharePoint - Audio Alerts Learning Cell:
-  ...> 1 - Audio Alerts > 1 - Audio Alerts.xlsx
-
-F20 PSD (Rev3): sram0.sharepoint.com > PDProcess > BC F20 MY28
-K4 PSD (Rev0): sram0.sharepoint.com > PDProcess > BC KAROO 4 MY29
-
 Skoda DuoBell Research PDF:
   https://d2p6e6u75xmxt8.cloudfront.net/2/2026/04/Skoda-DuoBell-Research-final.pdf
 
-GitHub - Bell sound fix: PR #3209 (KAROO-12244)
-GitHub - BLE audio alerts: PR #3475 (KAROO-12820)
-Karoo WAV format: ffmpeg -i <INPUT>.wav -ac 1 -ar 16000 -acodec pcm_s16le <OUTPUT>.wav
+WAV format: ffmpeg -i <INPUT>.wav -ac 1 -ar 16000 -acodec pcm_s16le <OUTPUT>.wav
 ```
