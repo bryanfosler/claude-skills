@@ -110,6 +110,40 @@ Syncs open GitHub issues across multiple repos onto a single GitHub Projects (v2
 
 ---
 
+### `/log-session`
+
+Writes a clean, retrieval-optimized session log to an Obsidian vault — the **write** half of the [Obsidian Agent-Brain Kit](obsidian-agent-brain/workflow-guide.md). Each log carries a one-line `summary` that the on-load hook and `/recall` read first. Text-only (no git/issues); appends an update on same-day re-runs.
+
+→ [skills/log-session/SKILL.md](skills/log-session/SKILL.md)
+
+---
+
+### `/recall`
+
+Searches an Obsidian vault (synthesis-first, then session logs) and answers **with citations** — the **on-demand read** half of the agent-brain loop. Pairs with `/log-session` and the on-load context hook.
+
+→ [skills/recall/SKILL.md](skills/recall/SKILL.md)
+
+---
+
+## Obsidian Agent-Brain Kit
+
+A complete, adoptable loop for using an Obsidian vault as your AI agent's long-term
+memory: the agent **logs what it does** and **pulls that context back** at session
+start or on demand. Works with Claude Code, Codex, or any agent — the vault is just
+a folder of Markdown.
+
+**The loop:**
+- **Write** — `/log-session` captures each session as a structured log
+- **Read on load** — `load-vault-context.py` (a SessionStart hook) injects recent context so new sessions start warm
+- **Read on demand** — `/recall` searches the vault and answers with citations
+- **Schema** — `AGENTS.template.md` is the rulebook both sides obey
+
+Never used Obsidian? → [obsidian-agent-brain/onboarding.md](obsidian-agent-brain/onboarding.md) (5-minute setup).
+Full workflow, setup, and upgrade paths → [obsidian-agent-brain/workflow-guide.md](obsidian-agent-brain/workflow-guide.md).
+
+---
+
 ## Optional Setup
 
 ### Token & Cost Tracking
