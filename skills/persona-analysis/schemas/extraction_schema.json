@@ -1,0 +1,176 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Interview Extraction Schema",
+  "description": "Structured behavioral data extracted from a customer interview. Every field uses constrained types (scales, enums, fixed lists) to ensure deterministic downstream analysis.",
+  "type": "object",
+  "required": [
+    "customer_id",
+    "interview_date",
+    "dimensions",
+    "raw_metadata"
+  ],
+  "properties": {
+    "customer_id": {
+      "type": "string",
+      "description": "Unique identifier for the customer (anonymized)"
+    },
+    "interview_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the interview was conducted (YYYY-MM-DD)"
+    },
+    "dimensions": {
+      "type": "object",
+      "description": "Behavioral dimensions extracted from the interview",
+      "required": [
+        "usage_frequency",
+        "feature_depth",
+        "primary_context",
+        "data_engagement",
+        "purchase_trigger",
+        "pain_points",
+        "ecosystem",
+        "social_context"
+      ],
+      "properties": {
+        "usage_frequency": {
+          "$ref": "#/$defs/scored_dimension_1_5",
+          "description": "How often the customer uses the product. 1=less than monthly, 2=monthly, 3=weekly, 4=several times per week, 5=daily or almost daily"
+        },
+        "feature_depth": {
+          "$ref": "#/$defs/scored_dimension_1_5",
+          "description": "Breadth and depth of feature usage. 1=uses 1-2 core features only, 2=uses basic feature set, 3=uses most features, 4=uses advanced features, 5=power user who configures deeply"
+        },
+        "primary_context": {
+          "$ref": "#/$defs/categorical_dimension",
+          "description": "The primary context in which they use the product. Options defined in project config."
+        },
+        "data_engagement": {
+          "$ref": "#/$defs/scored_dimension_1_5",
+          "description": "How much they engage with data/analytics. 1=never reviews data, 2=glances at summary, 3=reviews after each use, 4=compares trends over time, 5=deep analysis with exports"
+        },
+        "purchase_trigger": {
+          "$ref": "#/$defs/categorical_dimension",
+          "description": "What triggered the purchase decision. Options defined in project config."
+        },
+        "pain_points": {
+          "$ref": "#/$defs/multiselect_dimension",
+          "description": "Current frustrations or unmet needs. Selected from a fixed list defined in project config."
+        },
+        "ecosystem": {
+          "$ref": "#/$defs/multiselect_dimension",
+          "description": "Other products/tools/services used alongside this product. Selected from a fixed list defined in project config."
+        },
+        "social_context": {
+          "$ref": "#/$defs/categorical_dimension",
+          "description": "The social context of product use. Options defined in project config."
+        },
+        "tech_comfort": {
+          "$ref": "#/$defs/scored_dimension_1_5",
+          "description": "Optional Tier 2. Comfort with technology in general. 1=avoids tech, 5=early adopter"
+        },
+        "brand_relationship": {
+          "$ref": "#/$defs/categorical_dimension",
+          "description": "Optional Tier 2. Relationship to the brand: loyalist, pragmatist, skeptic, or new."
+        },
+        "budget_sensitivity": {
+          "$ref": "#/$defs/scored_dimension_1_5",
+          "description": "Optional Tier 2. Price sensitivity. 1=price insensitive, 5=very price sensitive."
+        },
+        "information_sources": {
+          "$ref": "#/$defs/multiselect_dimension",
+          "description": "Optional Tier 2. Where they learn about products."
+        },
+        "aspiration_gap": {
+          "$ref": "#/$defs/scored_dimension_1_5",
+          "description": "Optional Tier 2. Gap between current ability and aspirational identity. 1=content, 5=large gap."
+        },
+        "switching_history": {
+          "type": "object",
+          "description": "Optional Tier 2. What they switched from, to, and why.",
+          "properties": {
+            "switched_from": { "type": "string" },
+            "switched_to": { "type": "string" },
+            "switch_reason": { "type": "string" },
+            "evidence": { "type": "string" }
+          }
+        }
+      }
+    },
+    "raw_metadata": {
+      "type": "object",
+      "description": "Metadata about the extraction, not used in analysis",
+      "properties": {
+        "interviewer": { "type": "string" },
+        "interview_duration_minutes": { "type": "integer" },
+        "extraction_model": { "type": "string" },
+        "extraction_passes": { "type": "integer" },
+        "extraction_timestamp": { "type": "string", "format": "date-time" },
+        "notes": { "type": "string" }
+      }
+    }
+  },
+  "$defs": {
+    "scored_dimension_1_5": {
+      "type": "object",
+      "required": ["value", "evidence"],
+      "properties": {
+        "value": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "evidence": {
+          "type": "string",
+          "description": "Verbatim quote from the interview justifying this score"
+        },
+        "confidence": {
+          "type": "string",
+          "enum": ["high", "medium", "low"],
+          "default": "medium",
+          "description": "Extraction confidence. High=explicit statement, Medium=inferred from context, Low=ambiguous"
+        }
+      }
+    },
+    "categorical_dimension": {
+      "type": "object",
+      "required": ["value", "evidence"],
+      "properties": {
+        "value": {
+          "type": "string",
+          "description": "Selected from the project-specific enum list"
+        },
+        "evidence": {
+          "type": "string",
+          "description": "Verbatim quote from the interview"
+        },
+        "confidence": {
+          "type": "string",
+          "enum": ["high", "medium", "low"],
+          "default": "medium"
+        }
+      }
+    },
+    "multiselect_dimension": {
+      "type": "object",
+      "required": ["values", "evidence"],
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Selected from the project-specific option list"
+        },
+        "evidence": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "One verbatim quote per selected value"
+        },
+        "confidence": {
+          "type": "string",
+          "enum": ["high", "medium", "low"],
+          "default": "medium"
+        }
+      }
+    }
+  }
+}

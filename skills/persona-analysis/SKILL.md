@@ -5,14 +5,14 @@ description: Extract behavioral personas from customer interview transcripts usi
 
 # Persona Analysis Skill
 
-Analyze customer interview transcripts to discover behavioral personas. The Python pipeline at `~/Projects/persona-analysis/pipeline/` does the heavy lifting — run `python3 -m pipeline.run_pipeline --help` to see phase options and flags.
+Analyze customer interview transcripts to discover behavioral personas. The Python pipeline bundled in `pipeline/` does the heavy lifting — run `python3 -m pipeline.run_pipeline --help` to see phase options and flags.
 
 ## Prerequisites
 
 - Python 3.10+ with `numpy`, `scikit-learn`, `anthropic`
 - Interview transcripts as `.txt` or `.md` files (one per customer)
 - `ANTHROPIC_API_KEY` set in environment
-- Pipeline code at `~/Projects/persona-analysis/pipeline/`
+- Pipeline code bundled in `pipeline/` (included in this skill folder)
 
 ## What This Skill Produces
 
