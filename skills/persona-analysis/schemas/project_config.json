@@ -1,0 +1,87 @@
+{
+  "project": {
+    "name": "Customer Persona Analysis",
+    "product": "YOUR_PRODUCT_NAME",
+    "description": "Configure this file with your domain-specific dimension options before running the pipeline."
+  },
+  "dimension_options": {
+    "primary_context": {
+      "description": "The primary context in which customers use the product",
+      "options": ["REPLACE_WITH_YOUR_CONTEXTS"],
+      "examples_for_bike_computer": ["training", "commuting", "racing", "touring", "recreation", "exploration"],
+      "examples_for_saas": ["solo_work", "team_collaboration", "client_facing", "internal_ops"]
+    },
+    "purchase_trigger": {
+      "description": "What triggered the purchase/switch decision",
+      "options": ["REPLACE_WITH_YOUR_TRIGGERS"],
+      "examples_generic": [
+        "upgrade_capability",
+        "replace_broken",
+        "new_to_category",
+        "peer_recommendation",
+        "dissatisfied_with_previous",
+        "life_event",
+        "price_deal",
+        "brand_loyalty"
+      ]
+    },
+    "pain_points": {
+      "description": "Known pain points to select from. Build this list from initial interview scan.",
+      "options": ["REPLACE_WITH_YOUR_PAIN_POINTS"],
+      "examples_generic": [
+        "battery_life",
+        "setup_complexity",
+        "missing_features",
+        "reliability",
+        "sync_issues",
+        "ui_confusion",
+        "price_value",
+        "customer_support",
+        "integration_gaps",
+        "performance_speed"
+      ]
+    },
+    "ecosystem": {
+      "description": "Other products/tools/services customers use alongside yours",
+      "options": ["REPLACE_WITH_YOUR_ECOSYSTEM"],
+      "examples_generic": [
+        "competitor_product_a",
+        "companion_app_b",
+        "platform_c"
+      ]
+    },
+    "social_context": {
+      "description": "The social dimension of product usage",
+      "options": ["solo", "group", "competitive", "community", "professional"]
+    },
+    "brand_relationship": {
+      "description": "Tier 2: customer's relationship to the brand",
+      "options": ["loyalist", "pragmatist", "skeptic", "new_to_brand"]
+    },
+    "information_sources": {
+      "description": "Tier 2: where customers learn about products in this category",
+      "options": ["REPLACE_WITH_YOUR_SOURCES"],
+      "examples_generic": [
+        "youtube_reviews",
+        "reddit",
+        "friends_family",
+        "professional_review_sites",
+        "social_media",
+        "retail_staff",
+        "brand_website",
+        "forums"
+      ]
+    }
+  },
+  "pipeline_settings": {
+    "extraction_passes": 3,
+    "extraction_temperature": 0,
+    "min_cluster_size": 3,
+    "max_clusters": null,
+    "random_seed": 42,
+    "overfit_threshold": 0.50,
+    "borderline_confidence_threshold": 0.20,
+    "required_tier1_dimensions": 5,
+    "_note_overfit": "0.50 = single dimension contributes >50% of cluster separation. Framework thresholds: <30% balanced, 30-50% concentrated, >50% overfit"
+  }
+}

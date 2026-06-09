@@ -21,7 +21,7 @@ Extract behavioral personas from customer interview transcripts using structured
 - Python 3.10+ with `numpy`, `scikit-learn`, `anthropic`
 - Interview transcripts as `.txt` or `.md` files (one per customer)
 - `ANTHROPIC_API_KEY` set in environment
-- Pipeline code at `~/Projects/persona-analysis/pipeline/`
+- Pipeline code bundled in `pipeline/` (included in this skill folder)
 
 ## How It Works
 
@@ -99,12 +99,6 @@ Fits between `pd-mine-voices` (Phase 02) and `pd-jtbd` (Phase 03) in the product
 
 > When [persona's characteristic situation], I want to [motivation], so I can [outcome].
 
-## Installation
+## Setup
 
-This skill lives in the persona-analysis project directory. To install into the product-discovery plugin:
-
-```bash
-cp -r ~/Projects/persona-analysis/skill ~/claude-skills/plugins/product-discovery/skills/persona-analysis
-```
-
-The Python pipeline at `~/Projects/persona-analysis/pipeline/` must remain in place — the skill calls it via `python3 -m pipeline.run_pipeline`.
+See `SETUP.md` — everything needed to run is bundled in this folder. Run all commands from the package root so `python3 -m pipeline.run_pipeline` resolves.
