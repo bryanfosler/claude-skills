@@ -62,6 +62,54 @@ Based on [Anthropic's "Effective Harnesses for Long-Running Agents"](https://www
 
 ---
 
+### `/qa`
+
+A QA checkpoint to run before moving on or shipping. Reads the actual `git diff`, generates a **specific** test checklist tailored to the change type (UI control, API endpoint, bug fix, refactor…), waits for you to test, then records a clean pass or routes found issues back into build mode.
+
+→ [skills/qa/SKILL.md](skills/qa/SKILL.md)
+
+---
+
+### `/handoff`
+
+Generates a paste-ready handoff document so the next session can resume cold — no "what were we doing?" re-exploration. Enforces a six-question quality bar (goal, done, left, next action, prerequisite reads, scope guardrail) and ships a fill-in template.
+
+→ [skills/handoff/SKILL.md](skills/handoff/SKILL.md)
+
+---
+
+### `/scaffold-sessions-md`
+
+Creates a `sessions.md` session-log file at the project root in a consistent, reverse-chronological format — the file `/wrap-up` appends to at the end of every session.
+
+→ [skills/scaffold-sessions-md/SKILL.md](skills/scaffold-sessions-md/SKILL.md)
+
+---
+
+### `/scaffold-claude-md`
+
+Creates an opinionated project-level `CLAUDE.md` (not the generic `/init` output). A deterministic Python analyzer collects project facts — stack, git remote, layout, build/test commands, env vars, hardware signals — then the skill writes house-format prose around them for your review.
+
+→ [skills/scaffold-claude-md/SKILL.md](skills/scaffold-claude-md/SKILL.md)
+
+---
+
+### `/memory-lint`
+
+Health check for an LLM memory wiki (an index file plus one topic file per fact, à la Karpathy's LLM Wiki pattern). Catches the failure that silently breaks recall: index overflow past the 200-line cap, bloated inline entries, orphan files, broken references, duplicate/empty headings, and malformed frontmatter.
+
+→ [skills/memory-lint/SKILL.md](skills/memory-lint/SKILL.md)
+
+---
+
+### `/sync-project-board`
+
+Syncs open GitHub issues across multiple repos onto a single GitHub Projects (v2) board. Works around the v2 limitation that "Auto-add to project" only watches one repository per project. Idempotent — set your owner, project number, and repo list in `sync.sh`.
+
+→ [skills/sync-project-board/SKILL.md](skills/sync-project-board/SKILL.md)
+
+---
+
 ## Optional Setup
 
 ### Token & Cost Tracking
