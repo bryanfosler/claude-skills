@@ -37,38 +37,54 @@ non-trivial commands, no decisions, no investigation), ask before writing:
 "Session looks light — log anyway?" When unsure, lean toward writing; a thin
 log beats no log.
 
-### Step 2 — Resolve date/time, check for today's file
+### Step 2 — Identify THIS session's file
+
+**One file per SESSION, not per day.** If you run several agent sessions in
+parallel, each owns its own file. **Never select a file by "most recent" or
+mtime** — appending to a different session's file corrupts it.
 
 ```bash
 today=$(date '+%Y-%m-%d')
 now_hhmm=$(date '+%H%M')
 now_colon=$(date '+%H:%M')
 dir="$OBSIDIAN_SESSIONS_DIR"
-existing=$(ls -t "$dir"/${today}-[0-9][0-9][0-9][0-9]-*.md 2>/dev/null | head -1)
 ```
 
-- `$existing` empty → first run today → Step 3.
-- `$existing` set → re-run → Step 4.
+Decide first-run vs. re-run **for this session**:
+
+1. **Did this conversation already write a log today?** You know its path from
+   your own context → that's your file → **Step 4 (append)**.
+2. **First `/log-session` of this session?** → **Step 3 (create new)**.
+3. **Lost the path (context compacted)?** Find your file by the `session_key`
+   you recorded: `grep -l "^session_key: <your-key>" "$dir"/${today}-*.md`.
+   No match or no recorded key → treat as first run → Step 3.
+
+When in doubt, create a NEW file. Never append to a file you can't confirm is
+this session's.
 
 ### Step 3 — First run: write a new session log
 
 1. Generate a 3–7 word kebab-case slug naming the actual work
    (e.g. `oauth-token-rotation-fix`, not `session-work-done`).
 2. Filename: `$dir/${today}-${now_hhmm}-<slug>.md`
-3. Write this frontmatter — **the `summary` field is what the on-load hook and
-   `/recall` read first, so make it a sharp one-liner:**
+3. Generate this session's stable key (record it — you'll reuse it on re-run):
+   `session_key=$(uuidgen | tr 'A-Z' 'a-z' | cut -c1-8)`
+4. Write this frontmatter — **the `summary` field is what the on-load hook and
+   `/recall` read first, so make it a sharp one-liner; `session_key` is the
+   per-session anchor a re-run uses to find this file under parallelism:**
 
    ```yaml
    ---
    date: YYYY-MM-DD
    type: session-log
    project: <repo-or-project-slug, or "general">
+   session_key: <8-char key from step 3>
    summary: <one sentence — what this session accomplished>
    tags: [session-log, <2-4 topical tags>]
    ---
    ```
 
-4. Write the body using this structure. **Repeat the summary as the first line**
+5. Write the body using this structure. **Repeat the summary as the first line**
    so it's grabbable without parsing frontmatter. Omit any section that's empty.
 
    ```markdown
@@ -92,9 +108,11 @@ existing=$(ls -t "$dir"/${today}-[0-9][0-9][0-9][0-9]-*.md 2>/dev/null | head -1
    - <single concrete next action>
    ```
 
-### Step 4 — Re-run same day: append an update
+### Step 4 — Re-run in the same session: append an update
 
-Open `$existing`. Do NOT modify frontmatter or earlier sections. Append:
+Open **this session's file** (the path you recorded, or the `session_key` match
+from Step 2 — confirm the key matches first). Do NOT modify frontmatter or
+earlier sections, and never touch another session's file. Append:
 
 ```markdown
 
@@ -121,7 +139,7 @@ Logged to <dir>/2026-06-09-1432-oauth-token-rotation-fix.md (new)
 
 - **Slug collision** (same HHmm exists): append seconds — `${today}-${now_hhmm}$(date '+%S')-<slug>.md`.
 - **Sessions dir missing**: STOP, tell the user, don't write elsewhere.
-- **Multiple slug files today on re-run**: append to the most recent by mtime; don't merge across files.
+- **Many slug files today (parallel sessions)**: normal — each session owns its file. Append ONLY to the one whose `session_key` matches this session's. Never pick by mtime; never merge across sessions; when unsure, write a new file.
 
 ---
 
