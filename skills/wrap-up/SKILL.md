@@ -121,6 +121,21 @@ SESSION_TOKENS_SCRIPT: ~/path/to/session_tokens.py   # optional — see utils/se
    - All session files should live in the same `sessions/` folder — never outside it
    - Skip this step if `OBSIDIAN_SESSIONS_DIR` is not set
 
+**Artifacts (optional):**
+8b. If the session produced an HTML or visual artifact (dashboard, report,
+    diagram) and a vault is configured, embed it into the vault via the
+    **embed-artifact** skill so it's viewable in Obsidian. Default to the
+    LATEST version (refresh in place); embed all versions only if the user said
+    "log all artifacts." Skip if no artifact was produced.
+
+**Infra log (optional):**
+8c. If the session made a tooling/infrastructure change — skill created/installed/
+    edited, Claude Code `settings.json`/hooks, launchd/cron job, plugin/marketplace
+    change, symlink into `~/.claude`, MCP config — record it via the
+    **log-infra-change** skill (needs `INFRA_LOG_FILE` configured). Skip if the
+    session was only product/project work. This is the change-to-environment log
+    that `sessions.md`/memory don't cover.
+
 **Learning log:**
 9. If the session produced meaningful new technical concepts, debugging stories,
    or "aha moments", add a new section to the project's `learnings.md` (create
