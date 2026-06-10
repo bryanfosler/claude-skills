@@ -133,6 +133,15 @@ Print one line: the file path, and whether this was a fresh write or an append.
 Logged to <dir>/2026-06-09-1432-oauth-token-rotation-fix.md (new)
 ```
 
+### Step 6 — Artifacts (optional, delegated)
+
+This skill stays **text-only**. But if the session produced an HTML or visual
+artifact (dashboard, report, diagram) and a vault projects dir is configured,
+delegate the embed to the **embed-artifact** skill so the deliverable is
+viewable in the vault — don't inline HTML here. Default to the LATEST version;
+embed all versions only if the user said "log all artifacts." Then add to this
+log: `artifact updated: [[<Slug>]] (rev N)`.
+
 ---
 
 ## Edge cases

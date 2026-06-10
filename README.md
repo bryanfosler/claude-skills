@@ -124,6 +124,12 @@ Searches an Obsidian vault (synthesis-first, then session logs) and answers **wi
 
 → [skills/recall/SKILL.md](skills/recall/SKILL.md)
 
+### `/embed-artifact`
+
+Makes a generated HTML (or visual) artifact viewable **inside** Obsidian: copies it into a vault project folder and scaffolds a `.md` wrapper with an absolute `file://` iframe **plus** the artifact's diagrams as native Mermaid (so the note renders even if the iframe is blocked). Default refreshes the latest version in place; "log all" keeps timestamped copies. The **artifact** half of the loop — composed by `/log-session` and `/wrap-up`.
+
+→ [skills/embed-artifact/SKILL.md](skills/embed-artifact/SKILL.md)
+
 ---
 
 ## Obsidian Agent-Brain Kit
@@ -137,6 +143,7 @@ a folder of Markdown.
 - **Write** — `/log-session` captures each session as a structured log
 - **Read on load** — `load-vault-context.py` (a SessionStart hook) injects recent context so new sessions start warm
 - **Read on demand** — `/recall` searches the vault and answers with citations
+- **Embed deliverables** — `/embed-artifact` puts HTML/visual artifacts in the vault as notes you can view in Reading view
 - **Schema** — `AGENTS.template.md` is the rulebook both sides obey
 
 Never used Obsidian? → [obsidian-agent-brain/onboarding.md](obsidian-agent-brain/onboarding.md) (5-minute setup).
