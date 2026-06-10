@@ -130,6 +130,12 @@ Makes a generated HTML (or visual) artifact viewable **inside** Obsidian: copies
 
 → [skills/embed-artifact/SKILL.md](skills/embed-artifact/SKILL.md)
 
+### `/log-infra-change`
+
+Appends a structured entry to an infrastructure changelog (`INFRA_LOG_FILE`) for tooling/environment changes — skill installs/edits, Claude Code config & hooks, launchd/cron jobs, plugin/marketplace changes, symlinks, MCP config. The gap that session logs and memory don't cover. Invocable directly, and composed by `/wrap-up` and `/log-session`.
+
+→ [skills/log-infra-change/SKILL.md](skills/log-infra-change/SKILL.md)
+
 ---
 
 ## Obsidian Agent-Brain Kit
@@ -144,6 +150,7 @@ a folder of Markdown.
 - **Read on load** — `load-vault-context.py` (a SessionStart hook) injects recent context so new sessions start warm
 - **Read on demand** — `/recall` searches the vault and answers with citations
 - **Embed deliverables** — `/embed-artifact` puts HTML/visual artifacts in the vault as notes you can view in Reading view
+- **Log environment changes** — `/log-infra-change` records tooling/config/skill changes to an infra changelog
 - **Schema** — `AGENTS.template.md` is the rulebook both sides obey
 
 Never used Obsidian? → [obsidian-agent-brain/onboarding.md](obsidian-agent-brain/onboarding.md) (5-minute setup).

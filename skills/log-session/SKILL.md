@@ -142,6 +142,13 @@ viewable in the vault — don't inline HTML here. Default to the LATEST version;
 embed all versions only if the user said "log all artifacts." Then add to this
 log: `artifact updated: [[<Slug>]] (rev N)`.
 
+### Step 7 — Infra changes (optional, delegated)
+
+If the session made a tooling/infrastructure change (skill, Claude Code config,
+launchd/cron, plugin/marketplace, symlink, MCP config), delegate it to the
+**log-infra-change** skill so it lands in the infra changelog — session logs
+capture work, not environment changes. Skip for pure product/project work.
+
 ---
 
 ## Edge cases
