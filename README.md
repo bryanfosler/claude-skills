@@ -62,6 +62,22 @@ Based on [Anthropic's "Effective Harnesses for Long-Running Agents"](https://www
 
 ---
 
+### `/self-improving-loop`
+
+Run a task as an autonomous self-checking loop that improves its own approach each pass until it clears a goal or exhausts a loop budget. For tasks Claude doesn't one-shot well, where a defined quality signal can tell good from bad and each failure teaches the next prompt.
+
+**The loop:** produce → score → diagnose → amend → repeat. Keep-or-discard against best-so-far; stop on goal cleared, budget hit, or K passes with no gain.
+
+**Hard gate:** no checker, no loop. Leads with defining the goal signal (rubric / assertion / verifier-agent) so "improve" isn't vibes.
+
+**Cost-aware:** deterministic checker = free scoring; single judge by default, panel only for taste work; inline mode avoids subagent fan-out entirely. See the "Cost vs output" section.
+
+**Two modes:** autonomous (Workflow-orchestrated, walk-away) with a drop-in script template, or inline single-pass. Sibling to `long-running-agent-harness` — that one is self-*continuing* across sessions; this one is self-*improving* within a task.
+
+→ [skills/self-improving-loop/SKILL.md](skills/self-improving-loop/SKILL.md)
+
+---
+
 ### `/qa`
 
 A QA checkpoint to run before moving on or shipping. Reads the actual `git diff`, generates a **specific** test checklist tailored to the change type (UI control, API endpoint, bug fix, refactor…), waits for you to test, then records a clean pass or routes found issues back into build mode.
