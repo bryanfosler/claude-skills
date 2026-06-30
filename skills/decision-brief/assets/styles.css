@@ -1,0 +1,318 @@
+/* ============================================================
+   Decision Brief runtime styles — self-contained, light-first.
+   A formal decision document: numbered zones, a solid-accent
+   recommendation hero, a hard-fact stat strip, options as a
+   table. One restrained accent, used only to mark the answer /
+   recommended option. No emoji, no gradients, no decorative
+   color blocks. Tokens drive everything.
+   ============================================================ */
+:root {
+  --paper: #fdfcfa;          /* warm near-white sheet */
+  --paper-raise: #f4f2ed;    /* zone-head fill */
+  --ink: #1a1a1a;            /* body text */
+  --ink-soft: #45433f;       /* secondary text */
+  --ink-faint: #8a877f;      /* labels, meta */
+  --rule: #ddd9d0;           /* hairline rules */
+  --rule-soft: #ebe8e1;
+  --accent: #1f3a5f;         /* THE accent — deep slate-blue. Recommended only. */
+  --accent-soft: #eaeef3;    /* faint accent wash for the recommended row */
+  --desk: #efece6;           /* surface behind the sheet */
+  --edge: #a39c8d;           /* page-break marker — visible but neutral */
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--desk);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+#app { padding-bottom: 120px; }
+
+/* ---- toolbar (screen only) ---- */
+.db-toolbar {
+  position: sticky; top: 0; z-index: 40;
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 18px;
+  background: rgba(253,252,250,.94);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--sans);
+}
+.db-kind {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.db-spacer { flex: 1; }
+.db-btn {
+  font-family: var(--sans); font-size: 12.5px; color: var(--ink-soft);
+  background: #fff; border: 1px solid var(--rule); border-radius: 5px;
+  padding: 5px 11px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+}
+.db-btn:hover { border-color: var(--accent); color: var(--accent); }
+.db-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+.db-btn.primary:hover { filter: brightness(1.1); color: #fff; }
+.db-dirty { font-size: 12px; color: #a6701a; display: none; }
+.db-dirty.on { display: inline; }
+.db-saved { font-size: 11.5px; color: var(--ink-faint); }
+
+/* ---- altitude toggle ---- */
+.db-altitude { display: inline-flex; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+.db-altitude button {
+  font-family: var(--sans); font-size: 12px; font-weight: 600; letter-spacing: .02em;
+  background: #fff; color: var(--ink-faint); border: none; padding: 6px 13px; cursor: pointer;
+}
+.db-altitude button.active { background: var(--accent); color: #fff; }
+.db-altitude button + button { border-left: 1px solid var(--rule); }
+
+/* ---- the page (a Letter sheet: 816 x 1056 @ 96dpi) ---- */
+.db-page {
+  position: relative;
+  width: 816px; max-width: 94vw;
+  margin: 26px auto; background: var(--paper);
+  border: 1px solid var(--rule); padding: 46px 58px 64px;
+  box-shadow: 0 1px 10px rgba(0,0,0,.10);
+}
+.db-head { border-bottom: 2px solid var(--ink); padding-bottom: 12px; margin-bottom: 4px; }
+.db-eyebrow {
+  font-family: var(--sans); font-size: 10.5px; font-weight: 700; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--ink-faint); margin: 0 0 8px;
+}
+.db-head h1 { font-size: 26px; line-height: 1.15; margin: 0 0 7px; letter-spacing: -.01em; font-weight: 800; }
+.db-question { color: var(--ink-soft); font-size: 13.5px; font-style: italic; margin: 0; }
+.db-metaline {
+  font-family: var(--sans); font-size: 11.5px; color: var(--ink-faint);
+  margin: 12px 0 0; display: flex; gap: 18px; flex-wrap: wrap;
+}
+.db-metaline b { color: var(--ink-soft); font-weight: 600; }
+
+/* ---- the recommendation hero — the one place accent leads (solid fill) ---- */
+.block.is-recommendation { position: relative; margin: 18px 0; }
+.rec-hero {
+  background: var(--accent); color: #fff;
+  border-radius: 5px; padding: 15px 20px;
+}
+.rec-top { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 8px; }
+.rec-lab {
+  font-family: var(--sans); font-size: 11px; font-weight: 800; letter-spacing: .14em;
+  text-transform: uppercase; color: rgba(255,255,255,.82);
+}
+.rec-due {
+  font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--accent); background: #fff;
+  border-radius: 3px; padding: 4px 9px; white-space: nowrap;
+}
+.rec-hero .prose { font-size: 15.5px; line-height: 1.5; color: #fff; }
+.rec-hero .prose p:first-child { margin-top: 0; }
+.rec-hero .prose p:last-child { margin-bottom: 0; }
+.rec-hero .prose strong { color: #fff; }
+.rec-hero .prose a { color: #fff; border-bottom-color: rgba(255,255,255,.5); }
+.rec-hero .detail-rule { border-top-color: rgba(255,255,255,.28); }
+.block.is-recommendation.edited .rec-lab::after { content: " · edited"; color: #ffd9a8; }
+
+/* ---- stat strip — hard facts (dates, counts, key metrics) ---- */
+.db-strip {
+  display: grid; gap: 1px; background: var(--rule);
+  border: 1px solid var(--rule); border-radius: 5px; overflow: hidden;
+  margin: 14px 0 4px;
+}
+.db-stat { background: var(--paper); padding: 11px 14px; }
+.db-stat .v { font-family: var(--sans); font-size: 18px; font-weight: 800; color: var(--accent); letter-spacing: -.01em; line-height: 1.1; }
+.db-stat .k { font-family: var(--sans); font-size: 9.5px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-faint); margin-top: 4px; line-height: 1.25; }
+
+/* ---- numbered zones ---- */
+.zone { position: relative; border: 1px solid var(--rule); border-radius: 5px; margin: 11px 0; overflow: hidden; }
+.zonehead { display: flex; align-items: center; gap: 10px; background: var(--paper-raise); padding: 8px 14px; border-bottom: 1px solid var(--rule); }
+.znum {
+  font-family: var(--sans); font-weight: 800; font-size: 11px; color: #fff; background: var(--ink-faint);
+  width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; border-radius: 3px; flex: 0 0 auto;
+}
+.ztitle { font-family: var(--sans); font-weight: 800; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); }
+.zone.edited .ztitle::after { content: " · edited"; color: #a6701a; }
+.zone .block-body { padding: 12px 16px; }
+.zone.is-options .block-body { padding: 0; }
+
+/* ---- block actions (screen, on hover) ---- */
+.block-actions {
+  position: absolute; display: flex; gap: 4px; opacity: 0;
+  transition: opacity .12s; font-family: var(--sans);
+}
+.zone .block-actions { top: 7px; right: 10px; }
+.block.is-recommendation .block-actions { bottom: 9px; right: 12px; }
+.block:hover .block-actions { opacity: 1; }
+.block-actions button {
+  font-family: var(--sans); font-size: 10.5px; color: var(--ink-faint);
+  background: #fff; border: 1px solid var(--rule-soft); border-radius: 5px;
+  padding: 2px 7px; cursor: pointer;
+}
+.block-actions button:hover { color: var(--accent); border-color: var(--accent); }
+.block-actions .has-comments { color: var(--accent); border-color: var(--accent); }
+
+/* ---- prose ---- */
+.prose { font-size: 13.5px; }
+.prose p { margin: 8px 0; }
+.prose p:first-child { margin-top: 0; }
+.prose p:last-child { margin-bottom: 0; }
+.prose ul, .prose ol { margin: 7px 0; padding-left: 20px; }
+.prose li { margin: 3px 0; }
+.prose a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--rule); }
+.prose a:hover { border-bottom-color: var(--accent); }
+.prose code { font-family: var(--mono); font-size: 12px; background: var(--paper-raise); padding: 1px 5px; border-radius: 3px; }
+.prose blockquote { margin: 10px 0; padding: 2px 14px; border-left: 2px solid var(--rule); color: var(--ink-soft); font-style: italic; }
+.prose hr { border: none; border-top: 1px solid var(--rule); margin: 14px 0; }
+.prose strong { font-weight: 700; }
+.prose h3 { font-size: 14px; margin: 12px 0 5px; font-weight: 700; }
+
+/* ---- the "detail" expansion: hidden in Executive, shown in Detailed ---- */
+.detail { margin-top: 10px; }
+body.mode-exec .detail { display: none; }
+body.mode-detailed .detail { display: block; }
+.detail-rule { border: none; border-top: 1px solid var(--rule-soft); margin: 12px 0 0; }
+
+/* ---- options as a table ---- */
+.opt-table { width: 100%; border-collapse: collapse; font-family: var(--sans); }
+.opt-table th {
+  text-align: left; font-size: 9.5px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ink-faint); border-bottom: 1.5px solid var(--ink); padding: 7px 14px;
+}
+.opt-table td { padding: 9px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; font-size: 12.5px; }
+.opt-table tr:last-child td { border-bottom: none; }
+.opt-row.recommended td { background: var(--accent-soft); }
+.opt-row.recommended td:first-child { border-left: 4px solid var(--accent); }
+.opt-rank-cell { font-weight: 800; color: var(--ink-faint); width: 1.4em; }
+.opt-row.recommended .opt-rank-cell { color: var(--accent); }
+.opt-name-cell { width: 33%; }
+.opt-name { font-weight: 700; font-size: 13px; }
+.opt-pick {
+  display: inline-block; font-size: 8.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+  color: #fff; background: var(--accent); border-radius: 3px; padding: 2px 6px; margin-left: 7px; vertical-align: middle;
+}
+.opt-tradeoff { color: var(--ink-soft); }
+.opt-detail { margin-top: 8px; }
+.opt-detail .prose { font-size: 12px; }
+
+/* ---- editor ---- */
+.block-editor {
+  width: 100%; min-height: 120px; font-family: var(--mono); font-size: 13px;
+  background: #fff; color: var(--ink); border: 1px solid var(--accent);
+  border-radius: 5px; padding: 12px; line-height: 1.5; resize: vertical;
+}
+.editor-bar { display: flex; gap: 8px; margin-top: 8px; }
+.editor-field-tag { font-family: var(--sans); font-size: 11px; color: var(--ink-faint); margin-bottom: 6px; }
+
+/* ---- page-break boundary (screen aid: where Letter sheets fall) ---- */
+.page-edge { position: absolute; left: -22px; right: -22px; border-top: 2px dashed var(--edge); pointer-events: none; z-index: 2; }
+.page-edge::after {
+  content: "page " attr(data-page); position: absolute; left: 50%; transform: translateX(-50%); top: -9px;
+  background: var(--paper); border: 1px solid #c9c2b4; border-radius: 3px; padding: 2px 10px;
+  font-family: var(--sans); font-size: 10px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #6f695d;
+}
+
+/* ---- comments sidebar (screen only) ---- */
+.db-comments {
+  position: fixed; top: 0; right: 0; width: 330px; height: 100vh; z-index: 50;
+  background: var(--paper); border-left: 1px solid var(--rule); font-family: var(--sans);
+  transform: translateX(100%); transition: transform .2s; display: flex; flex-direction: column;
+}
+.db-comments.open { transform: translateX(0); }
+.cm-head { display: flex; align-items: center; gap: 8px; padding: 14px 16px; border-bottom: 1px solid var(--rule); }
+.cm-head h3 { margin: 0; font-size: 14px; flex: 1; font-family: var(--sans); }
+.cm-list { flex: 1; overflow-y: auto; padding: 10px 14px; }
+.cm-card { border: 1px solid var(--rule-soft); border-radius: 6px; padding: 10px; margin-bottom: 10px; background: #fff; }
+.cm-card.resolved { opacity: .55; }
+.cm-anchor { font-size: 11px; color: var(--accent); cursor: pointer; margin-bottom: 4px; display: block; }
+.cm-text { font-size: 13px; white-space: pre-wrap; }
+.cm-foot { display: flex; gap: 10px; margin-top: 6px; }
+.cm-foot button { font: inherit; font-size: 11px; background: none; border: none; color: var(--ink-faint); cursor: pointer; }
+.cm-foot button:hover { color: var(--accent); }
+.cm-empty { color: var(--ink-faint); font-size: 13px; text-align: center; margin-top: 30px; }
+.cm-add { padding: 12px 14px; border-top: 1px solid var(--rule); }
+.cm-add textarea { width: 100%; min-height: 54px; background: #fff; color: var(--ink); border: 1px solid var(--rule); border-radius: 6px; padding: 8px; font: inherit; font-size: 13px; resize: vertical; }
+.cm-target { font-size: 11px; color: var(--ink-faint); margin-bottom: 6px; }
+.block.cm-flash { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; transition: outline-color 1.2s; }
+
+/* transient toast for clean-copy */
+.db-toast {
+  position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);
+  background: var(--ink); color: #fff; font-family: var(--sans); font-size: 12.5px;
+  padding: 8px 16px; border-radius: 6px; z-index: 60; opacity: 0; transition: opacity .15s;
+}
+.db-toast.show { opacity: .95; }
+
+/* ============================================================
+   Dark override — minimal courtesy for night reading.
+   ============================================================ */
+body.theme-dark {
+  background: #14161a; --paper: #1b1e23; --paper-raise: #23272e;
+  --ink: #e6e3dc; --ink-soft: #b3afa6; --ink-faint: #8a877f;
+  --rule: #353a42; --rule-soft: #2a2e35; --accent: #7fa8d8; --accent-soft: #222d3a;
+  --edge: #3a3f47;
+}
+body.theme-dark .db-toolbar { background: rgba(27,30,35,.94); }
+body.theme-dark .db-btn, body.theme-dark .cm-card { background: #23272e; }
+body.theme-dark .db-head { border-bottom-color: var(--ink); }
+body.theme-dark .rec-hero, body.theme-dark .rec-hero .prose, body.theme-dark .rec-hero .prose strong { color: #11141a; }
+body.theme-dark .rec-hero .prose a { color: #11141a; border-bottom-color: rgba(0,0,0,.4); }
+body.theme-dark .rec-lab { color: rgba(0,0,0,.6); }
+body.theme-dark .znum { color: #14161a; }
+
+/* ============================================================
+   Print — the manual ⌘P → Save as PDF path. Prints whichever
+   altitude is showing. Executive is budgeted to one Letter page;
+   Detailed paginates. Screen-only page markers are hidden.
+   ============================================================ */
+@page { size: letter; margin: 0.7in 0.8in; }
+@media print {
+  body { background: #fff; color: #000; }
+  .db-toolbar, .db-comments, .block-actions, .db-toast, .page-edge { display: none !important; }
+  #app { padding-bottom: 0; }
+  .db-page { width: auto; max-width: none; margin: 0; border: none; box-shadow: none; padding: 0; }
+  .db-head { padding-bottom: 8pt; margin-bottom: 8pt; }
+  .db-head h1 { font-size: 18pt; }
+  .db-question { font-size: 11pt; }
+  .rec-hero { background: var(--accent) !important; color: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .rec-hero .prose, .rec-hero .prose strong { color: #fff !important; }
+  .rec-lab { color: rgba(255,255,255,.82) !important; }
+  .rec-due { background: #fff !important; color: var(--accent) !important; }
+  .zonehead { background: #f0ede7 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .znum { background: #8a877f !important; color: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .opt-row.recommended td { background: #eaeef3 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .opt-pick { background: #1f3a5f !important; color: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .db-stat .v { color: #1f3a5f !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  a { color: #000; }
+  /* Detailed: never split a zone mid-section. */
+  .zone, .rec-hero, .db-strip { page-break-inside: avoid; }
+
+  /* Executive: one Letter page by contract. Tighten, and let blocks FLOW
+     (page-break-inside:auto) so a zone near the edge isn't bumped wholesale,
+     leaving the bottom of page 1 empty. The density caps in
+     references/authoring.md are the real overflow guard. */
+  body.mode-exec { font-size: 8.6pt; line-height: 1.25; }
+  body.mode-exec .zone, body.mode-exec .rec-hero, body.mode-exec .db-strip { page-break-inside: auto; overflow: visible; }
+  body.mode-exec .db-head { padding-bottom: 4pt; margin-bottom: 4pt; }
+  body.mode-exec .db-head h1 { font-size: 14pt; margin-bottom: 2pt; }
+  body.mode-exec .db-question { font-size: 9pt; }
+  body.mode-exec .db-metaline { margin-top: 3pt; font-size: 8pt; gap: 12px; }
+  body.mode-exec .db-strip { margin: 3pt 0 2pt; }
+  body.mode-exec .db-stat { padding: 4pt 9pt; }
+  body.mode-exec .db-stat .v { font-size: 11pt; }
+  body.mode-exec .db-stat .k { font-size: 6.5pt; margin-top: 1.5pt; }
+  body.mode-exec .rec-hero { padding: 6pt 11pt; margin: 3pt 0; }
+  body.mode-exec .rec-top { margin-bottom: 3pt; }
+  body.mode-exec .rec-hero .prose { font-size: 9.2pt; line-height: 1.3; }
+  body.mode-exec .zone { margin: 2.5pt 0; }
+  body.mode-exec .zonehead { padding: 2pt 10pt; }
+  body.mode-exec .znum { width: 14pt; height: 14pt; font-size: 7.5pt; }
+  body.mode-exec .ztitle { font-size: 8pt; }
+  body.mode-exec .zone .block-body { padding: 3.5pt 10pt; }
+  body.mode-exec .prose { font-size: 8.4pt; }
+  body.mode-exec .prose p, body.mode-exec .prose ul, body.mode-exec .prose ol { margin: 1.5pt 0; }
+  body.mode-exec .prose li { margin: 0.6pt 0; }
+  body.mode-exec .opt-table th { font-size: 7pt; padding: 2.5pt 10pt; }
+  body.mode-exec .opt-table td { font-size: 8pt; padding: 3pt 10pt; }
+}

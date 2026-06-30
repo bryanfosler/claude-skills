@@ -27,6 +27,18 @@ ln -s ~/claude-skills/skills/wrap-up ~/.claude/skills/wrap-up
 
 ## Skills
 
+### `/decision-brief`
+
+Turns a body of work, a document, or a set of documents into a formal, **answer-first executive decision brief** — a recommendation memo, not a recap or a plan. One self-contained HTML file with a two-altitude toggle: an **Executive 1-pager** for leadership and a **Detailed ~3-pager** for the team that has to defend or build it.
+
+**Format:** a solid-accent recommendation hero (the verdict, up top), a flexible strip of concrete date/fact stats, numbered scannable zones, and a ranked options table with the recommended row marked — modeled on a real decision-brief + executive-summary house style, not an essay.
+
+**Built in:** prints to a clean one-page PDF from Chrome (⌘P), per-section clean-copy for pasting into Teams/email, an on-screen page-break boundary, inline edit + comments, and a **never-fabricate-a-conclusion** rule (it asks rather than inventing a recommendation the evidence doesn't support). Light/cream, single-accent, quiet. Composes with `/embed-artifact` for Obsidian.
+
+→ [skills/decision-brief/SKILL.md](skills/decision-brief/SKILL.md)
+
+---
+
 ### `/wrap-up`
 
 End-of-session checklist that runs automatically when you say "wrap up" or "close session".
