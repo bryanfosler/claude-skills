@@ -1,0 +1,51 @@
+{
+  "_comment": "Curation manifest for the Dovetail -> persona-engine connector. Each raw entry is routed to a STREAM by its Dovetail project id. Rider behavioral interviews feed the persona-clustering engine; B2B/OEM voice is landed separately and must NOT be clustered on rider dimensions. Edit projects/skip rules here; the adapter is generic.",
+  "streams": {
+    "rider-personas": {
+      "description": "Rider behavioral interviews -> persona-analysis clustering engine (the P0 feed).",
+      "input_dir": "../../persona-analysis-workspace/dovetail-input",
+      "projects": [
+        {
+          "id": "<dovetail-project-id>",
+          "name": "<project name>"
+        }
+      ],
+      "data_ids": [
+        "1QVULkbSpVV83l5QkDR3oc",
+        "3d8SfkogFJMNHPwQwMDfVA",
+        "5USOTJfTtB7hhBee5mTLrt",
+        "29QPBudpkSV0Ura2WPygSp",
+        "23c1nZ8U2XgheCYKDKrQb4",
+        "1ddJ1qeOSvNM344k6VfmVm",
+        "6p3haylf7c68QmklLyaQkW",
+        "cnkPscMeySlz4dxdo9VNU",
+        "6EmVqnS4qcZ5IKD4y7acTN"
+      ]
+    },
+    "oe-voice": {
+      "description": "OEM / B2B integration interviews. Landed for the separate OE/channel analysis. NOT fed to rider clustering.",
+      "input_dir": "streams/oe-voice",
+      "projects": [
+        {
+          "id": "<dovetail-project-id>",
+          "name": "<project name>"
+        }
+      ],
+      "data_ids": [
+        "3hz1xbMyQ2UhxoRdChNBEi"
+      ]
+    }
+  },
+  "skip_title_patterns": [
+    "(?i)\\bphotos\\b",
+    "(?i)candidates",
+    "(?i)interview q'?s",
+    "(?i)\\bplan\\b",
+    "(?i)cockpit",
+    "(?i)\\bsurvey\\b",
+    "\\s\\d+$"
+  ],
+  "skip_data_ids": [],
+  "keep_overrides": [],
+  "min_transcript_chars": 400
+}
