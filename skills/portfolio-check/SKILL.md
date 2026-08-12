@@ -13,26 +13,43 @@ It is **read-only** on Smartsheet and writes **only** to the vault. It never edi
 
 ## Configure
 
+Everything is driven by environment variables — nothing is hardcoded:
+
 ```
-OBSIDIAN_VAULT: ~/Documents/ObsidianVault        # vault ROOT (absolute path; may contain spaces — always quote)
-PORTFOLIO_CHECK_DIR: ~/Projects/portfolio-check  # where portfolio_check.py lives
-BOWLER_SHEET_ID: <smartsheet-sheet-id>           # the program bowler to scan
-KEYCHAIN_ITEM: smartsheet-api                    # macOS Keychain generic-password item holding the API token
+BOWLER_SHEET_ID                   # the Smartsheet program bowler to scan (required)
+PORTFOLIO_CHECK_VAULT_DIR         # where the brief is written
+                                  #   default ~/Documents/ObsidianVault/Sessions/Portfolio-Check
+PORTFOLIO_CHECK_KEYCHAIN_ITEM     # Keychain item holding the API token (default: smartsheet-api)
 ```
 
-**First-time setup** — store your own Smartsheet API token in the Keychain (the skill never reads a token from code or the vault):
+**First-time setup** — store your own Smartsheet API token in the Keychain. The skill never reads a token from code, the vault, or chat:
 
 ```bash
 security add-generic-password -a "$USER" -s smartsheet-api -w
 ```
 
-Generate the token in Smartsheet under *Account → Personal Settings → API Access*. If `KEYCHAIN_ITEM` is missing, STOP and tell the user to run the command above — never prompt for a token in chat or write one to disk.
+Generate the token in Smartsheet under *Account → Personal Settings → API Access*.
+
+Don't know the sheet id? List everything the token can see:
+
+```bash
+python3 bin/smartsheet_list.py
+```
+
+If the Keychain item is missing, the script fails on the `security` call — STOP and tell the user to run the `add-generic-password` command above. Never prompt for a token in chat or write one to disk.
 
 ---
 
 ## How it works
 
-All logic lives in `$PORTFOLIO_CHECK_DIR/portfolio_check.py` (pure Python, stdlib only). This skill is a thin wrapper: run it, commit the vault output, report terse.
+Self-contained: all logic lives in `bin/` inside this skill directory (pure Python, stdlib only — no venv, no pip install). This skill is a thin wrapper: run it, commit the vault output, report terse.
+
+```
+bin/portfolio_check.py    the scan (the one you run)
+bin/smartsheet_list.py    list sheets the token can see — use this to find BOWLER_SHEET_ID
+bin/smartsheet_meta.py    dump a sheet's column metadata (for adapting the detection rules)
+bin/smartsheet_dump.py    dump raw rows (for debugging a parse that looks wrong)
+```
 
 The script:
 1. Reads `$BOWLER_SHEET_ID` via the Smartsheet API. Token comes from macOS Keychain (`$KEYCHAIN_ITEM`) — never stored in code or the vault.
@@ -51,14 +68,16 @@ The script:
 ## Run
 
 ```bash
-cd $PORTFOLIO_CHECK_DIR && python3 portfolio_check.py
+python3 bin/portfolio_check.py
 ```
 
-Then commit the vault output (local only — never push; the nightly backup job pushes):
+Then commit the vault output, if the vault is a git repo:
 
 ```bash
-cd $OBSIDIAN_VAULT && git add Sessions/Portfolio-Check/ && git commit -m "portfolio-check: $(date +%Y-%m-%d)" || true
+git -C "$OBSIDIAN_VAULT" add Sessions/Portfolio-Check/ && git -C "$OBSIDIAN_VAULT" commit -m "portfolio-check: $(date +%Y-%m-%d)" || true
 ```
+
+**Adapting it to a different bowler.** The detection rules read specific column names (Status, Health, End Date, Owner, Progress Update, "Later than LC"). If your sheet names them differently, run `bin/smartsheet_meta.py <sheet_id>` to see the real columns and adjust the parser. Do this before trusting the first run — a rule that silently matches nothing looks identical to a healthy portfolio.
 
 ## Final report
 
