@@ -41,8 +41,8 @@ Do **not** try to graft speakers from the turn data onto the ms-precision cues b
 Run in-page, substituting the organizer's personal site path and the `.mp4` server-relative path from the URL's `id=`:
 
 ```js
-const base='/personal/rtarver_sram_com';
-const p='/personal/rtarver_sram_com/Documents/Recordings/<FILE>.mp4';
+const base='/personal/<organizer>_<tenant>_com';   // from the stream.aspx URL
+const p=base+'/Documents/Recordings/<FILE>.mp4';   // the URL's id= parameter, decoded
 const d=await fetch(base+'/_api/v2.1/drive',{headers:{accept:'application/json'}}).then(r=>r.json());
 const f=await fetch(base+"/_api/web/GetFileByServerRelativePath(decodedurl='"+p.replace(/'/g,"''")+"')?$select=UniqueId,Name,Length",{headers:{accept:'application/json;odata=nometadata'}}).then(r=>r.json());
 JSON.stringify({driveId:d.id, file:f})

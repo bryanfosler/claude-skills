@@ -17,7 +17,7 @@ self-contained runtime. This is the full shape.
   "meta": {
     "title": "string (required) — the brief's headline",
     "question": "string — the decision being made; shown as the header subtitle",
-    "owner": "string — who owns this (e.g. Bryan Fosler)",
+    "owner": "string — who owns this (e.g. a person or team name)",
     "date": "YYYY-MM-DD",
     "status": "string? — e.g. 'For decision — A3 ~Jul 7'",
     "due": "string? — e.g. '~Jul 7'; shown as a 'Decision needed by …' tag on the recommendation hero",

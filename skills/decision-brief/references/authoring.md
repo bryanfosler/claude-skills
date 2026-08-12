@@ -82,7 +82,7 @@ the moment it looks generated, leadership discounts it.
   don't traffic-light statuses. Color here means "this is the pick" — nothing else.
 - **No gradients, no shadows-for-flair, no big rounded cards.** A document has
   hairlines and whitespace, not UI chrome.
-- **No fake branding or logos.** Don't fabricate a SRAM/Hammerhead mark or a
+- **No fake branding or logos.** Don't fabricate a company or product mark or a
   letterhead. The clean header (title / question / owner / date) is the identity.
 - **No filler structure.** No "Executive Summary:" heading inside the recommendation
   (the whole doc is the summary), no restating the brief in the detail, no

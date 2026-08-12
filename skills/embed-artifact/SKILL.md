@@ -128,7 +128,7 @@ Rules:
 - **Reading view only** — note in the tip; the iframe/Mermaid don't render in
   source/live-preview reliably.
 - **Verify cross-link targets exist** (`ls`/glob) before writing `[[ ]]` links —
-  don't create broken links (mirror `reference_obsidian_sram` conventions:
+  don't create broken links (mirror your vault reference conventions:
   frontmatter, MOC contents for long notes).
 - **Refresh, don't clobber** — in latest mode, if the wrapper exists, update the
   iframe + Mermaid + bump `rev:`, but preserve any human-added prose sections.
