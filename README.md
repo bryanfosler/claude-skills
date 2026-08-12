@@ -166,6 +166,100 @@ Appends a structured entry to an infrastructure changelog (`INFRA_LOG_FILE`) for
 
 ---
 
+## PM automation suite
+
+Four skills that turn a calendar, a Teams tenant, and a Smartsheet program bowler into
+written vault artifacts. All are **read-only on their sources** and write only to the vault.
+Each has a `## Configure` block — set `OBSIDIAN_VAULT` (and for `/portfolio-check`, the
+sheet id + a Keychain token) before first run. All four require an authorized Microsoft 365
+connector except `/portfolio-check`, which needs a Smartsheet API token.
+
+### `/morning-brief`
+
+Pulls today's Microsoft 365 calendar, filters out cadence/template blocks, and writes a
+prep-focused brief — today's meetings with enough context to walk in prepared — to
+`Sessions/Briefings/`. Idempotent. Designed to run unattended before the workday.
+
+→ [skills/morning-brief/SKILL.md](skills/morning-brief/SKILL.md)
+
+### `/meeting-notes`
+
+Three-phase transcript pipeline: pulls Teams transcripts for the past 10 business days,
+lands VTTs on disk, then dispatches subagents that read local files only (no MCP, no auth
+overhead) to produce paired summary notes. Idempotent — skips meetings already summarized.
+Handles the recurring-URI multi-segment bug by scoring each segment against the target date.
+
+→ [skills/meeting-notes/SKILL.md](skills/meeting-notes/SKILL.md)
+
+### `/stream-transcript`
+
+The fallback when Graph transcript access is closed off by tenant policy (403
+`GraphAccessToTranscriptsDisabled`), the recording exceeds the connector's 100 MB fetch cap,
+or the call was ad-hoc with no calendar event. Calls the SharePoint/Stream REST API from
+inside the page via the user's own browser session and lifts the player's in-memory turn
+data — producing a speaker-labeled `<v Name>` VTT with no manual export. Also the fallback
+for `/meeting-notes` Phase 1.3.
+
+→ [skills/stream-transcript/SKILL.md](skills/stream-transcript/SKILL.md)
+
+### `/portfolio-check`
+
+Read-only scan of a Smartsheet program bowler for programs drifting, stalled, blocked,
+past-due, or marked Green-but-overdue. Exception-only — healthy programs get one summary
+line. Every claim is tagged **FACT / INFERENCE / HYPOTHESIS** with its source row, and the
+`contradiction` rule (Health=Green while showing trouble) is surfaced, never resolved. Stops
+and reports rather than emitting a misleading brief if the sheet structure changed.
+
+→ [skills/portfolio-check/SKILL.md](skills/portfolio-check/SKILL.md)
+
+---
+
+## Visual deliverables
+
+### `/visual-plan`
+
+Turns a text plan into a rich interactive visual plan — diagrams, file maps, annotated code,
+open questions, UI wireframes — as a single self-contained HTML file you can edit, comment
+on, and embed in Obsidian. No server, no sign-in, nothing leaves the machine.
+
+→ [skills/visual-plan/SKILL.md](skills/visual-plan/SKILL.md)
+
+### `/visual-recap`
+
+Same output shape, pointed at a PR, branch, commit, or diff: diagrams, file maps, API/schema
+summaries, annotated diffs, and review notes in one self-contained HTML file.
+
+→ [skills/visual-recap/SKILL.md](skills/visual-recap/SKILL.md)
+
+---
+
+## Thinking tools
+
+### `/grill-me`
+
+Interviews you relentlessly about a plan or design, resolving each branch of the decision
+tree until you reach shared understanding. Use it to stress-test before you build.
+
+→ [skills/grill-me/SKILL.md](skills/grill-me/SKILL.md)
+
+### `/grill-with-docs`
+
+`/grill-me` plus a memory: challenges the plan against your existing domain model, sharpens
+terminology, and updates `CONTEXT.md` / ADRs inline as decisions crystallize. Formats for
+both are in the skill directory.
+
+→ [skills/grill-with-docs/SKILL.md](skills/grill-with-docs/SKILL.md)
+
+### `/clip`
+
+Copies text to the macOS clipboard via `pbcopy` so it pastes cleanly, instead of being
+selected out of the terminal where line-wrapping and timestamps get baked into the
+selection. Useful right after producing a message draft or any multi-line block.
+
+→ [skills/clip/SKILL.md](skills/clip/SKILL.md)
+
+---
+
 ## Obsidian Agent-Brain Kit
 
 A complete, adoptable loop for using an Obsidian vault as your AI agent's long-term

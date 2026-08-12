@@ -20,7 +20,7 @@ text log, this handles rendered deliverables. It is designed to be **composed**
 ## Configure
 
 ```
-OBSIDIAN_VAULT: ~/Documents/ObsidianSRAM     # vault ROOT — must resolve to an absolute path for file://
+OBSIDIAN_VAULT: ~/Documents/ObsidianVault    # vault ROOT — must resolve to an absolute path for file://
 OBSIDIAN_PROJECTS_SUBDIR: Projects           # where per-project folders live
 ```
 

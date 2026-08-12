@@ -21,7 +21,7 @@ mid-session ("log this to the infra-log").
 ## Configure
 
 ```
-INFRA_LOG_FILE: ~/Documents/ObsidianSRAM/Infra-Log/infra-changelog.md
+INFRA_LOG_FILE: $OBSIDIAN_VAULT/Infra-Log/infra-changelog.md
 ```
 
 - Invoked **directly** and `INFRA_LOG_FILE` is unset or missing → STOP, tell the
